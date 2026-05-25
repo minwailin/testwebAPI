@@ -1,4 +1,4 @@
-name: .NET 10 CI Pipeline
+name: .NET CI Pipeline
 
 # ဘယ်အချိန်မှာ အလုပ်လုပ်မလဲ? main branch ထဲကို push လုပ်ရင် သို့မဟုတ် PR တင်ရင်
 on:
