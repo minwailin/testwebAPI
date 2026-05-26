@@ -50,7 +50,7 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: 'my-test-web-api' # ခင်ဗျား AWS မှာ ပေးခဲ့တဲ့ App Name
+        application_name: 'my_test_web_api' # ခင်ဗျား AWS မှာ ပေးခဲ့တဲ့ App Name
         environment_name: 'Mytestwebapi-env' # AWS က အလိုအလျောက် ပေးလိုက်တဲ့ Environment Name (AWS မှာ ပြန်ကြည့်ပါ)
         version_label: 'build-${{ github.run_number }}'
         region: 'ap-southeast-1' # ခင်ဗျား သုံးထားတဲ့ AWS Region (ဥပမာ- us-east-1 သို့မဟုတ် ap-southeast-1)
