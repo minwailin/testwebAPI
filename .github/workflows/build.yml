@@ -34,9 +34,13 @@ jobs:
       run: dotnet test --no-build --verbosity normal
 
     # ၆။ AWS ပေါ်တင်ဖို့အတွက် Publish လုပ်ပြီး Zip ဖိုင် ထုတ်မယ် (CD ခြေလှမ်းစပြီ)
+    #- name: Publish Application Artifact
+    #  run: dotnet publish --configuration Release --output ./publish_output
+    # ၆။ AWS ပေါ်တင်ဖို့အတွက် Self-Contained ပုံစံနဲ့ Runtime ပါတစ်ခါတည်း ထည့်ထုတ်မယ်
+    # (ပြောင်းလဲချက်- --runtime linux-x64 --self-contained true ကို ထည့်လိုက်တာပါ)
     - name: Publish Application Artifact
-      run: dotnet publish --configuration Release --output ./publish_output
-
+      run: dotnet publish --configuration Release --output ./publish_output --runtime linux-x64 --self-contained true
+      
     # ၇။ ထွက်လာတဲ့ File တွေကို Zip ချုပ်မယ်
     - name: Generate Deployment Package
       run: |
