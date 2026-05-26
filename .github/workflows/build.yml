@@ -1,6 +1,5 @@
-name: .NET CI Pipeline
+name: .NET 10 CI/CD Pipeline
 
-# ဘယ်အချိန်မှာ အလုပ်လုပ်မလဲ? main branch ထဲကို push လုပ်ရင် သို့မဟုတ် PR တင်ရင်
 on:
   push:
     branches: [ "main" ]
@@ -8,28 +7,51 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest # Linux Runner ပေါ်မှာ run မယ်
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-    # 1. GitHub ကနေ ကိုယ့် Code တွေကို ဆွဲယူမယ်
+    # ၁။ Code ဆွဲယူမယ်
     - name: Checkout Source Code
       uses: actions/checkout@v4
 
-    # 2. .NET 10 SDK ကို Runner ပေါ်မှာ တင်မယ်
+    # ၂။ .NET SDK သွင်းမယ်
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0.x' # (သို့မဟုတ် မိမိသုံးထားသည့် နောက်ဆုံး ဗားရှင်း)
+        dotnet-version: '10.0.x'
 
-    # 3. Nuget Packages တွေကို Cache လုပ်ပြီး Restore လုပ်မယ် (Speed Up Pipeline)
+    # ၃။ Restore လုပ်မယ်
     - name: Restore Dependencies
       run: dotnet restore
 
-    # 4. Code ကို Compile လုပ်မယ်
+    # ၄။ Build လုပ်မယ်
     - name: Build Application
       run: dotnet build --configuration Release --no-restore
 
-    # 5. Unit Test တွေရှိရင် တစ်ခါတည်း Run မယ်
+    # ၅။ Test ပတ်မယ်
     - name: Run Automated Tests
       run: dotnet test --no-build --verbosity normal
+
+    # ၆။ AWS ပေါ်တင်ဖို့အတွက် Publish လုပ်ပြီး Zip ဖိုင် ထုတ်မယ် (CD ခြေလှမ်းစပြီ)
+    - name: Publish Application Artifact
+      run: dotnet publish --configuration Release --output ./publish_output
+
+    # ၇။ ထွက်လာတဲ့ File တွေကို Zip ချုပ်မယ်
+    - name: Generate Deployment Package
+      run: |
+        cd ./publish_output
+        zip -r ../deploy-package.zip .
+        cd ..
+
+    # ၈။ AWS ပေါ်သို့ အလိုအလျောက် လှမ်းတင်ပြီ! (The Magic Step)
+    - name: Deploy to AWS Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v22
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: 'my-test-web-api' # ခင်ဗျား AWS မှာ ပေးခဲ့တဲ့ App Name
+        environment_name: 'Mytestwebapi-env' # AWS က အလိုအလျောက် ပေးလိုက်တဲ့ Environment Name (AWS မှာ ပြန်ကြည့်ပါ)
+        version_label: 'build-${{ github.run_number }}'
+        region: 'us-southeast-1' # ခင်ဗျား သုံးထားတဲ့ AWS Region (ဥပမာ- us-east-1 သို့မဟုတ် ap-southeast-1)
+        deployment_package: 'deploy-package.zip'

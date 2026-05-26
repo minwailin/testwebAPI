@@ -32,7 +32,10 @@ app.MapGet("/weather", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
+
+app.MapGet("/health1", () => Results.Ok(new { status = "Healthy", timestamp = DateTime.UtcNow }));
 
 app.Run();
 
