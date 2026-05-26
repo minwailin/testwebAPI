@@ -53,5 +53,5 @@ jobs:
         application_name: 'my-test-web-api' # ခင်ဗျား AWS မှာ ပေးခဲ့တဲ့ App Name
         environment_name: 'Mytestwebapi-env' # AWS က အလိုအလျောက် ပေးလိုက်တဲ့ Environment Name (AWS မှာ ပြန်ကြည့်ပါ)
         version_label: 'build-${{ github.run_number }}'
-        region: 'us-southeast-1' # ခင်ဗျား သုံးထားတဲ့ AWS Region (ဥပမာ- us-east-1 သို့မဟုတ် ap-southeast-1)
+        region: 'ap-southeast-1' # ခင်ဗျား သုံးထားတဲ့ AWS Region (ဥပမာ- us-east-1 သို့မဟုတ် ap-southeast-1)
         deployment_package: 'deploy-package.zip'
